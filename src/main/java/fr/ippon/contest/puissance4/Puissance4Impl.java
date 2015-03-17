@@ -32,14 +32,8 @@ public class Puissance4Impl implements Puissance4 {
     @Override
     public void chargerJeu(char[][] grille, char tour) {
 
-        if (grille.length != 6) {
-            throw new IllegalArgumentException("Must have 6 lines");
-        }
-        for (char[] line : grille) {
-            if (line.length != 7) {
-                throw new IllegalArgumentException("Must have 7 columns by row");
-            }
-        }
+        assertGridIsValid(grille);
+
         if (!isPlayerValid(tour)) {
             throw new IllegalArgumentException("Player must be valid");
         }
@@ -66,6 +60,17 @@ public class Puissance4Impl implements Puissance4 {
     @Override
     public void jouer(int colonne) {
 
+    }
+
+    private void assertGridIsValid(char[][] grille) {
+        if (grille.length != 6) {
+            throw new IllegalArgumentException("Must have 6 lines");
+        }
+        for (char[] line : grille) {
+            if (line.length != 7) {
+                throw new IllegalArgumentException("Must have 7 columns by row");
+            }
+        }
     }
 
     private boolean isPlayerValid(char player) {
