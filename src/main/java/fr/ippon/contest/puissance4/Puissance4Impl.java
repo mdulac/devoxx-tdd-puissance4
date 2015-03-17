@@ -1,5 +1,7 @@
 package fr.ippon.contest.puissance4;
 
+import java.util.Random;
+
 import static fr.ippon.contest.puissance4.Puissance4.EtatJeu.EN_COURS;
 
 public class Puissance4Impl implements Puissance4 {
@@ -8,9 +10,12 @@ public class Puissance4Impl implements Puissance4 {
 
     private char[][] gameGrid;
 
+    private static final char[] players = new char[]{'J', 'R'};
+
+    private char currentPlayer;
+
     @Override
     public void nouveauJeu() {
-        gameState = EN_COURS;
         gameGrid = new char[][]{
                 {'-', '-', '-', '-', '-', '-', '-'}
                 , {'-', '-', '-', '-', '-', '-', '-'}
@@ -19,6 +24,9 @@ public class Puissance4Impl implements Puissance4 {
                 , {'-', '-', '-', '-', '-', '-', '-'}
                 , {'-', '-', '-', '-', '-', '-', '-'}
         };
+
+        currentPlayer = players[new Random(System.currentTimeMillis()).nextInt() % 2];
+        gameState = EN_COURS;
     }
 
     @Override
