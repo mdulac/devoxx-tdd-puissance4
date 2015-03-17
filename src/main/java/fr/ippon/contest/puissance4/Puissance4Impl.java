@@ -6,7 +6,7 @@ import static fr.ippon.contest.puissance4.Puissance4.EtatJeu.EN_COURS;
 
 public class Puissance4Impl implements Puissance4 {
 
-    private EtatJeu gameState;
+    private EtatJeu gameState = EN_COURS;
 
     private char[][] gameGrid;
 
@@ -32,6 +32,20 @@ public class Puissance4Impl implements Puissance4 {
     @Override
     public void chargerJeu(char[][] grille, char tour) {
 
+        if (grille.length != 6) {
+            throw new IllegalArgumentException("Must have 6 lines");
+        }
+        for (char[] line : grille) {
+            if (line.length != 7) {
+                throw new IllegalArgumentException("Must have 7 columns by row");
+            }
+        }
+        if (!isPlayerValid(tour)) {
+            throw new IllegalArgumentException("Player must be valid");
+        }
+
+        gameGrid = grille;
+        currentPlayer = tour;
     }
 
     @Override
@@ -53,4 +67,15 @@ public class Puissance4Impl implements Puissance4 {
     public void jouer(int colonne) {
 
     }
+
+    private boolean isPlayerValid(char player) {
+        for (char p : players) {
+            if (player == p) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
