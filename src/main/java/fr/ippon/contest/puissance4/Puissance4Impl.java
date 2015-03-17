@@ -28,7 +28,7 @@ public class Puissance4Impl implements Puissance4 {
 
     @Override
     public EtatJeu getEtatJeu() {
-        return null;
+        return gameState;
     }
 
     @Override
