@@ -8,7 +8,14 @@ public class Puissance4Impl implements Puissance4 {
 
     private EtatJeu gameState = EN_COURS;
 
-    private char[][] gameGrid;
+    private char[][] gameGrid = new char[][]{
+            {'-', '-', '-', '-', '-', '-', '-'}
+            , {'-', '-', '-', '-', '-', '-', '-'}
+            , {'-', '-', '-', '-', '-', '-', '-'}
+            , {'-', '-', '-', '-', '-', '-', '-'}
+            , {'-', '-', '-', '-', '-', '-', '-'}
+            , {'-', '-', '-', '-', '-', '-', '-'}
+    };
 
     private static final char[] players = new char[]{'J', 'R'};
 
