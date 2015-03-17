@@ -1,11 +1,24 @@
 package fr.ippon.contest.puissance4;
 
+import static fr.ippon.contest.puissance4.Puissance4.EtatJeu.EN_COURS;
+
 public class Puissance4Impl implements Puissance4 {
 
+    private EtatJeu gameState;
+
+    private char[][] gameGrid;
 
     @Override
     public void nouveauJeu() {
-
+        gameState = EN_COURS;
+        gameGrid = new char[][]{
+                {'-', '-', '-', '-', '-', '-', '-'}
+                , {'-', '-', '-', '-', '-', '-', '-'}
+                , {'-', '-', '-', '-', '-', '-', '-'}
+                , {'-', '-', '-', '-', '-', '-', '-'}
+                , {'-', '-', '-', '-', '-', '-', '-'}
+                , {'-', '-', '-', '-', '-', '-', '-'}
+        };
     }
 
     @Override
