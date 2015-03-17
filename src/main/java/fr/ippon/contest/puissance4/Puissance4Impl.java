@@ -49,12 +49,12 @@ public class Puissance4Impl implements Puissance4 {
 
     @Override
     public char getTour() {
-        return 0;
+        return currentPlayer;
     }
 
     @Override
     public char getOccupant(int ligne, int colonne) {
-        return 0;
+        return gameGrid[ligne][colonne];
     }
 
     @Override
