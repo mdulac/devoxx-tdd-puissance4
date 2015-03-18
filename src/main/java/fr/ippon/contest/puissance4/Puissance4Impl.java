@@ -20,7 +20,6 @@ public class Puissance4Impl implements Puissance4 {
     private static final char[] players = new char[]{'J', 'R'};
 
     private int currentPlayerIndex = 0;
-    private char currentPlayer = players[currentPlayerIndex];
 
     @Override
     public void nouveauJeu() {
@@ -34,7 +33,6 @@ public class Puissance4Impl implements Puissance4 {
         };
 
         currentPlayerIndex = new Random(System.currentTimeMillis()).nextInt() % 2;
-        currentPlayer = players[currentPlayerIndex];
         gameState = EN_COURS;
     }
 
@@ -48,7 +46,6 @@ public class Puissance4Impl implements Puissance4 {
         }
 
         gameGrid = grille;
-        currentPlayer = tour;
         currentPlayerIndex = playerIndex(tour);
     }
 
@@ -59,7 +56,7 @@ public class Puissance4Impl implements Puissance4 {
 
     @Override
     public char getTour() {
-        return currentPlayer;
+        return currentPlayer();
     }
 
     @Override
@@ -75,13 +72,12 @@ public class Puissance4Impl implements Puissance4 {
 
         int line = selectFirstLineEmptyAtColumn(colonne);
 
-        gameGrid[line][colonne] = currentPlayer;
+        gameGrid[line][colonne] = currentPlayer();
         changePlayer();
     }
 
     private void changePlayer() {
         currentPlayerIndex = ++currentPlayerIndex % 2;
-        currentPlayer = players[currentPlayerIndex];
     }
 
     private void assertGridIsValid(char[][] grille) {
@@ -123,6 +119,10 @@ public class Puissance4Impl implements Puissance4 {
         }
 
         throw new IllegalStateException("Column is full");
+    }
+
+    private char currentPlayer() {
+        return players[currentPlayerIndex];
     }
 
 }
