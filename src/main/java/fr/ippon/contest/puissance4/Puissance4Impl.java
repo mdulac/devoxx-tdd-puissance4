@@ -19,8 +19,8 @@ public class Puissance4Impl implements Puissance4 {
 
     private static final char[] players = new char[]{'J', 'R'};
 
-    private int currentPlayerIndex;
-    private char currentPlayer;
+    private int currentPlayerIndex = 0;
+    private char currentPlayer = players[currentPlayerIndex];
 
     @Override
     public void nouveauJeu() {
