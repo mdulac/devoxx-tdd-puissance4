@@ -58,8 +58,6 @@ public class Puissance4Impl implements Puissance4 {
 
         if (empties <= 0) {
             gameState = MATCH_NUL;
-        } else {
-            gameState = EN_COURS;
         }
     }
 
