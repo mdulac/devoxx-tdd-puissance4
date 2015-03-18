@@ -19,6 +19,7 @@ public class Puissance4Impl implements Puissance4 {
 
     private static final char[] players = new char[]{'J', 'R'};
 
+    private int currentPlayerIndex;
     private char currentPlayer;
 
     @Override
@@ -32,7 +33,8 @@ public class Puissance4Impl implements Puissance4 {
                 , {'-', '-', '-', '-', '-', '-', '-'}
         };
 
-        currentPlayer = players[new Random(System.currentTimeMillis()).nextInt() % 2];
+        currentPlayerIndex = new Random(System.currentTimeMillis()).nextInt() % 2;
+        currentPlayer = players[currentPlayerIndex];
         gameState = EN_COURS;
     }
 
@@ -47,6 +49,7 @@ public class Puissance4Impl implements Puissance4 {
 
         gameGrid = grille;
         currentPlayer = tour;
+        currentPlayerIndex = playerIndex(tour);
     }
 
     @Override
@@ -66,7 +69,19 @@ public class Puissance4Impl implements Puissance4 {
 
     @Override
     public void jouer(int colonne) {
+        if (colonne < 0 || colonne > gameGrid.length) {
+            throw new IllegalArgumentException("Column must be valid");
+        }
 
+        int line = selectFirstLineEmptyAtColumn(colonne);
+
+        gameGrid[line][colonne] = currentPlayer;
+        changePlayer();
+    }
+
+    private void changePlayer() {
+        currentPlayerIndex = ++currentPlayerIndex % 2;
+        currentPlayer = players[currentPlayerIndex];
     }
 
     private void assertGridIsValid(char[][] grille) {
@@ -80,6 +95,16 @@ public class Puissance4Impl implements Puissance4 {
         }
     }
 
+    private int playerIndex(char player) {
+        for (int i = 0; i <= players.length - 1; i++) {
+            if (player == players[i]) {
+                return i;
+            }
+        }
+
+        throw new IllegalStateException("Player doesn't exist");
+    }
+
     private boolean isPlayerValid(char player) {
         for (char p : players) {
             if (player == p) {
@@ -88,6 +113,16 @@ public class Puissance4Impl implements Puissance4 {
         }
 
         return false;
+    }
+
+    private int selectFirstLineEmptyAtColumn(int column) {
+        for (int i = gameGrid.length - 1; i > -1; i--) {
+            if (gameGrid[i][column] == '-') {
+                return i;
+            }
+        }
+
+        throw new IllegalStateException("Column is full");
     }
 
 }
