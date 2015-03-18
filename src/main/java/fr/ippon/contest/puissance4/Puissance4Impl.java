@@ -3,36 +3,43 @@ package fr.ippon.contest.puissance4;
 import java.util.Random;
 
 import static fr.ippon.contest.puissance4.Puissance4.EtatJeu.EN_COURS;
+import static fr.ippon.contest.puissance4.Puissance4.EtatJeu.MATCH_NUL;
+import static java.lang.System.currentTimeMillis;
 
 public class Puissance4Impl implements Puissance4 {
+
+    private static final int LINES_COUNT = 6;
+    private static final int COLUMNS_COUNT = 7;
+    private static final char EMPTY = '-';
 
     private EtatJeu gameState = EN_COURS;
 
     private char[][] gameGrid = new char[][]{
-            {'-', '-', '-', '-', '-', '-', '-'}
-            , {'-', '-', '-', '-', '-', '-', '-'}
-            , {'-', '-', '-', '-', '-', '-', '-'}
-            , {'-', '-', '-', '-', '-', '-', '-'}
-            , {'-', '-', '-', '-', '-', '-', '-'}
-            , {'-', '-', '-', '-', '-', '-', '-'}
+            {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
+            , {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
+            , {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
+            , {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
+            , {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
+            , {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
     };
 
     private static final char[] players = new char[]{'J', 'R'};
 
     private int currentPlayerIndex = 0;
+    private int empties = LINES_COUNT * COLUMNS_COUNT;
 
     @Override
     public void nouveauJeu() {
         gameGrid = new char[][]{
-                {'-', '-', '-', '-', '-', '-', '-'}
-                , {'-', '-', '-', '-', '-', '-', '-'}
-                , {'-', '-', '-', '-', '-', '-', '-'}
-                , {'-', '-', '-', '-', '-', '-', '-'}
-                , {'-', '-', '-', '-', '-', '-', '-'}
-                , {'-', '-', '-', '-', '-', '-', '-'}
+                {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
+                , {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
+                , {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
+                , {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
+                , {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
+                , {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY}
         };
 
-        currentPlayerIndex = new Random(System.currentTimeMillis()).nextInt() % 2;
+        currentPlayerIndex = new Random(currentTimeMillis()).nextInt() % 2;
         gameState = EN_COURS;
     }
 
@@ -47,6 +54,13 @@ public class Puissance4Impl implements Puissance4 {
 
         gameGrid = grille;
         currentPlayerIndex = playerIndex(tour);
+        empties = countEmpties();
+
+        if (empties <= 0) {
+            gameState = MATCH_NUL;
+        } else {
+            gameState = EN_COURS;
+        }
     }
 
     @Override
@@ -73,19 +87,22 @@ public class Puissance4Impl implements Puissance4 {
         int line = selectFirstLineEmptyAtColumn(colonne);
 
         gameGrid[line][colonne] = currentPlayer();
+        empties--;
+
+        if (empties <= 0) {
+            gameState = MATCH_NUL;
+        }
+
         changePlayer();
     }
 
-    private void changePlayer() {
-        currentPlayerIndex = ++currentPlayerIndex % 2;
-    }
-
     private void assertGridIsValid(char[][] grille) {
-        if (grille.length != 6) {
+
+        if (grille.length != LINES_COUNT) {
             throw new IllegalArgumentException("Must have 6 lines");
         }
         for (char[] line : grille) {
-            if (line.length != 7) {
+            if (line.length != COLUMNS_COUNT) {
                 throw new IllegalArgumentException("Must have 7 columns by row");
             }
         }
@@ -102,18 +119,18 @@ public class Puissance4Impl implements Puissance4 {
     }
 
     private boolean isPlayerValid(char player) {
-        for (char p : players) {
-            if (player == p) {
-                return true;
-            }
+        try {
+            playerIndex(player);
+        } catch (Exception e) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     private int selectFirstLineEmptyAtColumn(int column) {
         for (int i = gameGrid.length - 1; i > -1; i--) {
-            if (gameGrid[i][column] == '-') {
+            if (gameGrid[i][column] == EMPTY) {
                 return i;
             }
         }
@@ -123,6 +140,23 @@ public class Puissance4Impl implements Puissance4 {
 
     private char currentPlayer() {
         return players[currentPlayerIndex];
+    }
+
+    private void changePlayer() {
+        currentPlayerIndex = ++currentPlayerIndex % 2;
+    }
+
+    private int countEmpties() {
+        int empties = 0;
+        for (char[] line : gameGrid) {
+            for (char cell : line) {
+                if (cell == EMPTY) {
+                    empties++;
+                }
+            }
+        }
+
+        return empties;
     }
 
 }
