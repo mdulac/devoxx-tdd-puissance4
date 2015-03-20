@@ -57,6 +57,8 @@ public class Puissance4Impl implements Puissance4 {
 
         if (empties <= 0) {
             gameState = MATCH_NUL;
+        } else {
+            gameState = EN_COURS;
         }
     }
 
@@ -199,6 +201,64 @@ public class Puissance4Impl implements Puissance4 {
         for (int i = column + 1; i < gameGrid[0].length; i++) {
             if (gameGrid[line][i] == currentPlayer) {
                 lineLength++;
+            } else {
+                break;
+            }
+        }
+
+        if (lineLength >= 4) {
+            gameState = currentPlayer == 'J' ? JAUNE_GAGNE : ROUGE_GAGNE;
+        }
+
+        lineLength = 1;
+
+        // Check \ diagonal line
+        int j = line - 1;
+
+        for (int i = column - 1; i >= 0; i--) {
+            if (j >= 0 && gameGrid[j][i] == currentPlayer) {
+                lineLength++;
+                j--;
+            } else {
+                break;
+            }
+        }
+
+        j = line + 1;
+
+        for (int i = column + 1; i < gameGrid[0].length; i++) {
+            if (j < gameGrid.length && gameGrid[j][i] == currentPlayer) {
+                lineLength++;
+                j++;
+            } else {
+                break;
+            }
+        }
+
+        if (lineLength >= 4) {
+            gameState = currentPlayer == 'J' ? JAUNE_GAGNE : ROUGE_GAGNE;
+        }
+
+        lineLength = 1;
+
+        // Check / diagonal line
+        j = line + 1;
+
+        for (int i = column - 1; i >= 0; i--) {
+            if (j < gameGrid.length && gameGrid[j][i] == currentPlayer) {
+                lineLength++;
+                j++;
+            } else {
+                break;
+            }
+        }
+
+        j = line - 1;
+
+        for (int i = column + 1; i < gameGrid[0].length; i++) {
+            if (j >= 0 && gameGrid[j][i] == currentPlayer) {
+                lineLength++;
+                j--;
             } else {
                 break;
             }
