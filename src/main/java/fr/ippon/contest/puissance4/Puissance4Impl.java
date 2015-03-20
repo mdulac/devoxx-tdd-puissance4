@@ -185,6 +185,29 @@ public class Puissance4Impl implements Puissance4 {
             gameState = currentPlayer == 'J' ? JAUNE_GAGNE : ROUGE_GAGNE;
         }
 
+        lineLength = 1;
+
+        // Check horizontal line
+        for (int i = column - 1; i >= 0; i--) {
+            if (gameGrid[line][i] == currentPlayer) {
+                lineLength++;
+            } else {
+                break;
+            }
+        }
+
+        for (int i = column + 1; i < gameGrid[0].length; i++) {
+            if (gameGrid[line][i] == currentPlayer) {
+                lineLength++;
+            } else {
+                break;
+            }
+        }
+
+        if (lineLength >= 4) {
+            gameState = currentPlayer == 'J' ? JAUNE_GAGNE : ROUGE_GAGNE;
+        }
+
     }
 
 }
