@@ -2,8 +2,7 @@ package fr.ippon.contest.puissance4;
 
 import java.util.Random;
 
-import static fr.ippon.contest.puissance4.Puissance4.EtatJeu.EN_COURS;
-import static fr.ippon.contest.puissance4.Puissance4.EtatJeu.MATCH_NUL;
+import static fr.ippon.contest.puissance4.Puissance4.EtatJeu.*;
 import static java.lang.System.currentTimeMillis;
 
 public class Puissance4Impl implements Puissance4 {
@@ -91,6 +90,8 @@ public class Puissance4Impl implements Puissance4 {
             gameState = MATCH_NUL;
         }
 
+        checkLinesForCurrentPlayerFrom(line, colonne);
+
         changePlayer();
     }
 
@@ -127,7 +128,7 @@ public class Puissance4Impl implements Puissance4 {
     }
 
     private int selectFirstLineEmptyAtColumn(int column) {
-        for (int i = gameGrid.length - 1; i > -1; i--) {
+        for (int i = gameGrid.length - 1; i >= 0; i--) {
             if (gameGrid[i][column] == EMPTY) {
                 return i;
             }
@@ -155,6 +156,35 @@ public class Puissance4Impl implements Puissance4 {
         }
 
         return empties;
+    }
+
+    private void checkLinesForCurrentPlayerFrom(int line, int column) {
+
+        // Line length is at least equals to the player position
+        int lineLength = 1;
+        int currentPlayer = currentPlayer();
+
+        // Check vertical line
+        for (int i = line - 1; i >= 0; i--) {
+            if (gameGrid[i][column] == currentPlayer) {
+                lineLength++;
+            } else {
+                break;
+            }
+        }
+
+        for (int i = line + 1; i < gameGrid.length; i++) {
+            if (gameGrid[i][column] == currentPlayer) {
+                lineLength++;
+            } else {
+                break;
+            }
+        }
+
+        if (lineLength >= 4) {
+            gameState = currentPlayer == 'J' ? JAUNE_GAGNE : ROUGE_GAGNE;
+        }
+
     }
 
 }
