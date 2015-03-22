@@ -52,27 +52,7 @@ public class Puissance4Impl implements Puissance4 {
         gameState = EN_COURS;
     }
 
-    @Override
-    public void chargerJeu(char[][] grille, char tour) {
-
-        assertGridIsValid(grille);
-
-        if (!isPlayerValid(tour)) {
-            throw new IllegalArgumentException(PLAYER_NOT_VALID);
-        }
-
-        gameGrid = grille;
-        currentPlayerIndex = playerIndex(tour);
-        gameState = EN_COURS;
-
-        for (int l = 0; l < gameGrid.length; l++) {
-            for (int c = 0; c < gameGrid[l].length; c++) {
-                if (gameGrid[l][c] != EMPTY) {
-                    checkLinesForPlayerFrom(getOccupant(l, c), l, c);
-                }
-            }
-        }
-
+    private void isNulMatch() {
         if (gameState == EN_COURS) {
             empties = countEmpties();
 
@@ -80,7 +60,31 @@ public class Puissance4Impl implements Puissance4 {
                 gameState = MATCH_NUL;
             }
         }
+    }
 
+    private void loadGrid(char[][] grille, char tour) {
+        gameGrid = grille;
+        currentPlayerIndex = playerIndex(tour);
+        gameState = EN_COURS;
+    }
+
+    private void checkLinesInGrid() {
+        for (int l = 0; l < gameGrid.length; l++) {
+            for (int c = 0; c < gameGrid[l].length; c++) {
+                if (gameGrid[l][c] != EMPTY) {
+                    checkLinesFrom(l, c);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void chargerJeu(char[][] grille, char tour) {
+        assertPlayerValid(tour);
+        assertGridValid(grille);
+        loadGrid(grille, tour);
+        checkLinesInGrid();
+        isNulMatch();
     }
 
     @Override
@@ -90,7 +94,7 @@ public class Puissance4Impl implements Puissance4 {
 
     @Override
     public char getTour() {
-        return currentPlayer();
+        return PLAYERS[currentPlayerIndex];
     }
 
     @Override
@@ -104,22 +108,20 @@ public class Puissance4Impl implements Puissance4 {
             throw new IllegalArgumentException(COLUMN_NOT_VALID);
         }
 
-        int line = selectFirstLineEmptyAtColumn(colonne);
+        int line = firstEmptyLineForColumn(colonne);
 
-        gameGrid[line][colonne] = currentPlayer();
+        gameGrid[line][colonne] = getTour();
         empties--;
 
         if (empties <= 0) {
             gameState = MATCH_NUL;
+        } else {
+            checkLinesFrom(line, colonne);
+            changePlayer();
         }
-
-        checkLinesForPlayerFrom(currentPlayer(), line, colonne);
-
-        changePlayer();
     }
 
-    private void assertGridIsValid(char[][] grille) {
-
+    private void assertGridValid(char[][] grille) {
         if (grille.length != LINES_COUNT) {
             throw new IllegalArgumentException(GRID_LINES_COUNT_NOT_VALID);
         }
@@ -140,17 +142,15 @@ public class Puissance4Impl implements Puissance4 {
         throw new IllegalStateException(UNKNOWN_PLAYER);
     }
 
-    private boolean isPlayerValid(char player) {
+    private void assertPlayerValid(char player) {
         try {
             playerIndex(player);
         } catch (IllegalStateException e) {
-            return false;
+            throw new IllegalArgumentException(PLAYER_NOT_VALID);
         }
-
-        return true;
     }
 
-    private int selectFirstLineEmptyAtColumn(int column) {
+    private int firstEmptyLineForColumn(int column) {
         for (int i = gameGrid.length - 1; i >= 0; i--) {
             if (gameGrid[i][column] == EMPTY) {
                 return i;
@@ -158,10 +158,6 @@ public class Puissance4Impl implements Puissance4 {
         }
 
         throw new IllegalStateException(COLUMN_FULL);
-    }
-
-    private char currentPlayer() {
-        return PLAYERS[currentPlayerIndex];
     }
 
     private void changePlayer() {
@@ -181,7 +177,9 @@ public class Puissance4Impl implements Puissance4 {
         return empties;
     }
 
-    private void checkLinesForPlayerFrom(char player, int line, int column) {
+    private void checkLinesFrom(int line, int column) {
+        char player = getOccupant(line, column);
+
         checkVerticalLine(player, line, column);
         checkHorizontalLine(player, line, column);
         checkFirstDiagonalLine(player, line, column);
